@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>20180525_react</title>
+    <script src="./build/react.js"></script>
+    <script src="./build/react-dom.js"></script>
+    <script src="./build/browser.min.js"></script>
+    <script src="./index.js"></script>
+    <style>
+        .box {
+            padding: 20px;
+            border: 1px black dashed;
+        }
+        #root {
+            padding-bottom: 500px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>20180525</h1>
+<div id="root">
+
+</div>
+
+
+<script type="text/babel">
+    let tool = new ToolLibrary();
+
+
+    class SumOfPositive extends React.Component {
+        constructor(props) {
+            super(props);
+            this.state = {
+                array:[],
+                sum:''
+            };
+
+            this.handleClick = this.handleClick.bind(this);
+        }
+
+        handleClick(){
+            this.state.array.push(this.input.value);
+            this.state.sum = this.state.array.reduce((prev,curr)=>{
+                if (tool.isClass(Number(curr)) === "Number" && curr>0) {
+                    return Number(prev)+Number(curr);
+                }
+                return Number(prev);
+            },0);
+            this.setState(this.state);
+        }
+
+        render() {
+            return (
+                <div className="box">
+                    <h2>第一题：计算数组中大于零的值的和，输入数值，输出和</h2>
+                    <h3>
+                        You get an array of numbers, return the sum of all of the positives ones.
+                        Example [1,-4,7,12] => 1 + 7 + 12 = 20
+                        Note: array may be empty, in this case return 0.
+                    </h3>
+                    <input type="text" ref={(input) => this.input = input}/>
+                    <input type="button" value="ok" onClick={this.handleClick}/>
+                    <span>array:{this.state.array.join(",")}</span>
+                    <p>result:{ this.state.sum }</p>
+                </div>
+            );
+        }
+    }
+
+    class NextPrime extends React.Component {
+        constructor(props) {
+            super(props);
+            this.state = {
+                instructions:"输入一个大于零的数",
+                result:'',
+                value:'',
+                time:''
+            };
+            this.handleClick = this.handleClick.bind(this);
+            this.handleInputChange = this.handleInputChange.bind(this);
+        }
+
+        handleInputChange(e){
+            this.setState({
+                value:e.target.value
+            })
+        }
+
+        handleClick(){
+            let val = Number(this.state.value),tag = true,startTime = new Date();
+            if (tool.isClass(val) === "Number" && val > 0) {
+                this.state.instructions = "格式有效";
+                do {
+                    tag = true;
+                    for (var i = 2; i <= Math.sqrt(val); i++) {
+                        if (val%i==0){
+                            tag = false;
+                            break
+                        }
+                    }
+                    if(tag){
+                        this.state.result = val;
+                    }else {
+                        val++;
+                    }
+                }while (tag===false);
+            }else {
+                this.state.instructions = "格式问题";
+            }
+            this.state.time = (new Date()) - startTime;
+            this.setState(this.state);
+        }
+
+        render() {
+            return (
+                <div className="box">
+                    <h2>第二题：寻找下一个质数</h2>
+                    <h3>
+                        Get the next prime number!
+                        You will get a number n (>= 0) and your task is to find the next prime number.
+                        Make sure to optimize your code: there will numbers tested up to about 1012
+                    </h3>
+                    <input type="text" value={this.state.value} onChange={this.handleInputChange}/>
+                    <input type="button" value="ok" onClick={this.handleClick}/>
+                    <span>说明:{this.state.instructions}</span>
+                    <p>result:{ this.state.result }</p>
+                    <p>耗时:{ this.state.time }ms</p>
+                </div>
+            );
+        }
+    }
+
+    class NumTranChines extends React.Component {
+        constructor(props) {
+            super(props);
+            this.state = {
+                instructions:"输入一个正整数",
+                result:'',
+                value:'',
+                time:''
+            };
+            this.handleClick = this.handleClick.bind(this);
+            this.handleInputChange = this.handleInputChange.bind(this);
+        }
+
+        handleInputChange(e){
+            this.setState({
+                value:e.target.value
+            })
+        }
+
+        handleClick(){
+            let val = Number(this.state.value),startTime = new Date(),result=[];
+            let arr = ["零","一","二","三","四","五","六","七","八","九"];
+            let level =["","十","百","千","万","十","百","千","亿","十","百","千","万","十","百","千","万"];
+            let order = ["十","百","千","万","亿"];
+
+            if (tool.isClass(val) === "Number" && val%1=== 0 &&val > 0) {
+                this.state.instructions = "格式有效";
+                val = this.state.value.split("").reverse();
+
+                val.forEach((item,index)=>{
+                    result.unshift(level[index]);
+                    result.unshift(arr[Number(item)])
+                });
+
+                var copyResult = tool.deepClone(result);
+                let tag = 0;
+
+                result.forEach((item,index)=>{
+                    if(item === "零"){
+                        if(index === result.length-2){
+                            copyResult.splice(index-tag,1);
+                            return;
+                        }
+                        if (order.indexOf(result[index - 1]) > order.indexOf(result[index + 1])) {
+                            copyResult.splice(index+1-tag,1)
+                        }else if(order.indexOf(result[index - 1]) < order.indexOf(result[index + 1])){
+                            copyResult.splice(index-tag,1)
+                        }
+                        tag++;
+                    }
+                });
+
+                console.log(copyResult);
+                for(var i=0;i<copyResult.length;i++){
+                    if(copyResult[i] === "零"){
+                        if(copyResult[i+1] === "零" || copyResult[i+1] === ""){
+                            copyResult.splice(i,1);
+                            i--;
+                        }else if(order.indexOf(copyResult[i+1])<=2 && order.indexOf(copyResult[i+1])>=0 ){
+                            copyResult.splice(i,2);
+                            i=i-2;
+                        }else if(order.indexOf(copyResult[i+1])>2){
+                            if(order.indexOf(copyResult[i-1])!==-1 && order.indexOf(copyResult[i-1])<order.indexOf(copyResult[i+1])){
+                                copyResult.splice(i,1);
+                                i=i-1;
+                            }else if(order.indexOf(copyResult[i-1])!==-1 && order.indexOf(copyResult[i-1])>=order.indexOf(copyResult[i+1])) {
+                                copyResult.splice(i,2);
+                                i=i-2;
+                            }
+                        }
+                        console.log(copyResult);
+                    }
+                }
+
+            }else {
+                this.state.instructions = "格式问题";
+            }
+            this.state.result = copyResult;
+            this.state.time = (new Date()) - startTime;
+            this.setState(this.state);
+        }
+
+        render() {
+            return (
+                <div className="box">
+                    <h2>第三题：数字中文转换</h2>
+                    <input type="text" value={this.state.value} onChange={this.handleInputChange}/>
+                    <input type="button" value="ok" onClick={this.handleClick}/>
+                    <span>说明:{this.state.instructions}</span>
+                    <p>result:{ this.state.result }</p>
+                    <p>耗时:{ this.state.time }ms</p>
+                </div>
+            );
+        }
+    }
+
+    const div = <div>
+                    <SumOfPositive />
+                    <NextPrime />
+                    <NumTranChines />
+                </div>
+    ReactDOM.render(
+        div,
+        document.getElementById('root')
+    );
+</script>
+
+</body>
+</html>
