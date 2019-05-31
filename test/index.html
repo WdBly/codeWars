@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>20180525_react</title>
+    <link rel="styleshee" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/antd/3.10.7/antd.css"/>
+    <script src="./../build/react.js"></script>
+    <script src="./../build/react-dom.js"></script>
+    <script src="./../build/browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/antd/3.10.7/antd.js"></script>
+    <style>
+        .box {
+            padding: 20px;
+            border: 1px black dashed;
+        }
+        #root {
+            padding-bottom: 500px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>test form submit</h1>
+<div id="root">
+
+</div>
+
+
+<script type="text/babel">
+
+    console.log(antd);
+    import { Form, Icon, Input, Button } from 'antd';
+
+    const FormItem = Form.Item;
+
+    function hasErrors(fieldsError) {
+        return Object.keys(fieldsError).some(field => fieldsError[field]);
+    }
+
+    class TestFormSubmit extends React.Component {
+        componentDidMount() {
+            // To disabled submit button at the beginning.
+            this.props.form.validateFields();
+        }
+
+        handleSubmit = (e) => {
+            e.preventDefault();
+            this.props.form.validateFields((err, values) => {
+                if (!err) {
+                    console.log('Received values of form: ', values);
+                }
+            });
+        }
+
+        render() {
+            const { getFieldDecorator, getFieldsError, getFieldError, isFieldTouched } = this.props.form;
+
+            // Only show error after a field is touched.
+            const userNameError = isFieldTouched('userName') && getFieldError('userName');
+            const passwordError = isFieldTouched('password') && getFieldError('password');
+            return (
+            <Form layout="inline" onSubmit={this.handleSubmit}>
+                <FormItem
+                    validateStatus={userNameError ? 'error' : ''}
+                    help={userNameError || ''}
+                >
+                    {getFieldDecorator('userName', {
+                        rules: [{ required: true, message: 'Please input your username!' }],
+                    })(
+                        <Input prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="Username" />
+                    )}
+                </FormItem>
+                <FormItem
+                validateStatus={passwordError ? 'error' : ''}
+                help={passwordError || ''}
+                >
+                {getFieldDecorator('password', {
+                    rules: [{ required: true, message: 'Please input your Password!' }],
+                })(
+                    <Input prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />} type="password" placeholder="Password" />
+                )}
+                </FormItem>
+                <FormItem>
+                <Button
+                    type="primary"
+                    htmlType="submit"
+                    disabled={hasErrors(getFieldsError())}
+                >
+                    Log in
+                </Button>
+                </FormItem>
+            </Form>
+            );
+        }
+    }
+
+    const App = Form.create()(TestFormSubmit);
+
+    ReactDOM.render(
+        <App/>,
+        document.getElementById('root')
+    );
+</script>
+
+</body>
+</html>

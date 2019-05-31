@@ -3,13 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <title>codeWars_code</title>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+    <style>
+
+        .css-not-selector-shortcut {
+            width: 110px;
+            height: 110px;
+            background-color: yellowgreen;
+            margin: 20px auto;
+            clip-path: polygon(50% 0px, 100% 100%, 0px 100%)
+        }
+    </style>
 </head>
+
 <body>
 
 <ul>
     <li><a href="./2018_05_25_code_war.html">2018_05_25_code_war</a></li>
+    <p class="var-dynamic">var-dynamic</p>
 </ul>
 
+<div class="css-not-selector-shortcut">
+</div>
 
+<script>
+    var el = document.querySelector('.var-dynamic');
+    el.style.setProperty('--customize-height', 1000 + 'px')
+</script>
 </body>
 </html>

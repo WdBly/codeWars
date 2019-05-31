@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>20180525_react</title>
+    <link rel="styleshee" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/antd/3.10.7/antd.css"/>
+    <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <style>
+        .box {
+            padding: 20px;
+            border: 1px black dashed;
+        }
+        #root {
+            padding-bottom: 500px;
+        }
+    </style>
+</head>
+<body>
+
+<div id="root">
+
+</div>
+
+
+<script type="text/babel">
+
+    class Text extends React.Component {
+
+        constructor(props){
+            super(props);
+
+            this.state = {
+                value: this.props.value
+            }
+        }
+
+        componentDidMount(){
+        }
+
+        componentWillUnmount(){
+        }
+
+        static getDerivedStateFromProps(props, state){
+            console.log(props, state);
+        }
+
+        render() {
+            return (
+                <p>{this.state.value}</p>
+            );
+        }
+
+        
+    }
+
+    class TestFormSubmit extends React.Component {
+
+        constructor(props){
+            super(props);
+            this.state = {
+                curr_value: 1
+            }
+        }
+
+        componentWillMount() {
+        }
+
+        componentDidCatch(error, info) { // 获取到javascript错误
+            console.log(12);
+        }
+
+        componentDidMount() {
+
+        }
+
+        render() {
+            return (
+                <div id="root">
+                    <p ref="pTag" onClick={() => this.setState({
+                        curr_value: 2
+                    })}>set{this.state.curr_value}</p>
+                    <Text ref="text" value={this.state.curr_value} />
+                </div>
+            );
+        }
+    }
+
+    TestFormSubmit.defaultProps = {
+        name: "zhouwei"
+    }
+
+    ReactDOM.render(
+        <TestFormSubmit curr_value={111} />,
+        document.getElementById('root')
+    );
+</script>
+
+</body>
+</html>
